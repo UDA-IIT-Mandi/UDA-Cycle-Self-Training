@@ -51,15 +51,19 @@ The method combines:
 - **Architecture**: ResNet-18 with bottleneck dimension 256
 - **Training**: 50 epochs with 1000 iterations per epoch
 
-### Key Features
-1. **Cycle Self-Training**: Implements bidirectional consistency between source and target domains
-2. **Adaptive Thresholding**: Uses confidence-based pseudo-labeling with threshold 0.97
-3. **Multi-loss Training**: Combines classification loss, transfer loss, CST loss, and FixMatch loss
-4. **SAM Optimization**: Uses Sharpness-Aware Minimization for improved generalization
-5. **Automatic Dataset Download**: SVHN and MNIST datasets are automatically downloaded when running the code
-
 ### Training Results
-The current implementation shows progressive improvement in classification accuracy over epochs, with detailed logging of:
+The current implementation shows progressive improvement in classification accuracy over epochs. Based on the training logs from [`logs/train-2025-06-18-21_38_57.txt`](logs/train-2025-06-18-21_38_57.txt), our SVHN→MNIST adaptation achieved:
+
+**Final Performance:**
+- **Top-1 Accuracy**: 92.5%
+- **Top-5 Accuracy**: 99.13%
+
+**Training Progress:**
+- **Initial Accuracy (Epoch 0)**: 82.27%
+- **Mid-training (Epoch 25)**: 91.93%
+- **Final Accuracy (Epoch 49)**: 92.73%
+
+The training demonstrates consistent improvement with detailed logging of:
 - Classification Loss
 - Transfer Loss (Tsallis entropy)
 - CST Loss (Cycle Self-Training)
@@ -70,7 +74,7 @@ The current implementation shows progressive improvement in classification accur
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/UDA-Cycle-Self-Training.git
+git clone https://github.com/UDA-IIT-Mandi/UDA-Cycle-Self-Training.git
 cd UDA-Cycle-Self-Training
 ```
 
@@ -176,17 +180,13 @@ If you use this code, please cite the original CST paper:
 }
 ```
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
-
 ## Acknowledgments
 
 - **Original CST Authors**: Liu et al. for the Cycle Self-Training methodology and [original implementation](https://github.com/Liuhong99/CST)
 - **CST Paper**: ["Cycle Self-Training for Domain Adaptation"](https://arxiv.org/abs/2103.03571)
 - **PyTorch Transfer Learning Library**: For domain adaptation utilities
 - **DCASE Challenge**: For the audio scene classification dataset and benchmarks
-- **PaSST Authors**: For the Patchout faSt Spectrogram Transformer model
+- **PaSST Authors**: For the Patchout Audio Spectrogram Transformer model
 
 ## Contact
 
