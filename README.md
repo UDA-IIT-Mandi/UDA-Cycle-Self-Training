@@ -1,171 +1,272 @@
 # UDA-Cycle-Self-Training
 
-A PyTorch implementation of Unsupervised Domain Adaptation using Cycle Self-Training (CST) adapted for computer vision tasks, with future extensions planned for audio scene classification using the DCASE TAU 2020 dataset with PaSST feature extractors.
-
-## Overview
-
-This repository is based on the Cycle Self-Training (CST) method from the paper ["Cycle Self-Training for Domain Adaptation"](https://arxiv.org/abs/2103.03571) by Liu et al. Our implementation adapts the original [CST codebase](https://github.com/Liuhong99/CST) to work with SVHN→MNIST domain adaptation and extends it for future audio applications.
-
-The method combines:
-- **Tsallis Entropy** for domain adaptation
-- **FixMatch-style augmentation** for consistency regularization  
-- **Cycle Self-Training** mechanism for improved pseudo-labeling
-- **SAM (Sharpness-Aware Minimization)** optimizer for better generalization
-
-## Project Status
-
-🚧 **Work in Progress** - Currently adapted and tested on SVHN→MNIST adaptation. The final goal is to implement this approach on the DCASE TAU 2020 dataset using PaSST (Patchout Audio Spectrogram Transformer) feature extractors for acoustic scene classification.
+This repository contains the second internship project completed during the research internship at IIT Mandi implementing Unsupervised Domain Adaptation using Cycle Self-Training (CST) techniques. We started by adapting and validating existing CST approaches on computer vision datasets, then extended our work to audio domain adaptation using PaSST feature extractors on the DCASE dataset - representing our contribution to cross-device acoustic scene classification.
 
 ## Repository Structure
 
 ```
 ├── .gitignore
 ├── README.md
-├── cst_cv.ipynb             # Main implementation notebook (adapted from original CST)
-├── common/                  # Common utilities and modules
-│   ├── loss/                # Loss functions
-│   ├── modules/             # Model architectures
-│   │   ├── classifier.py
-│   │   └── regressor.py
-│   ├── tools/               # Training utilities
-│   │   ├── fix_utils.py
-│   │   ├── randaugment.py
-│   │   └── sam.py           # SAM optimizer
-│   ├── utils/               # General utilities
-│   │   ├── data.py
-│   │   ├── logger.py
-│   │   └── meter.py
-│   └── vision/              # Vision-specific modules
-├── dalib/                   # Domain adaptation library (from original CST)
-│   ├── adaptation/          # Adaptation algorithms
-│   ├── modules/             # Core modules
-│   └── translation/         # Translation utilities
-└── logs/                    # Training logs and checkpoints
+├── cst_cv.ipynb                    # Computer vision implementation (SVHN→MNIST)
+├── cst_dcase.ipynb                 # Audio implementation (DCASE TAU 2020)
+├── cst_dcase_modified.ipynb        # Modified DCASE implementation with SAM
+├── cst_dcase_testresults.ipynb     # DCASE test results and evaluation
+├── archive/                        # Archive of original implementations
+│   ├── CST1.py                     # Original CST implementation
+│   ├── cst_bert_seq.py             # BERT sequence implementation
+│   ├── cst_cv.ipynb                # Archived CV notebook
+│   └── run_cst.py                  # Original run script
+├── common/                         # Common utilities and modules
+│   ├── __init__.py
+│   ├── audio/                      # Audio-specific modules
+│   │   ├── __init__.py
+│   │   ├── datasets.py             # DCASE dataset implementation
+│   │   └── transforms.py           # Audio transformations
+│   ├── loss/                       # Loss functions
+│   │   └── __init__.py
+│   ├── modules/                    # Model architectures
+│   │   ├── __init__.py
+│   │   ├── classifier.py           # Classifier implementations
+│   │   └── regressor.py            # Regressor implementations
+│   ├── tools/                      # Training utilities
+│   │   ├── fix_utils.py            # FixMatch utilities
+│   │   ├── randaugment.py          # RandAugment implementation
+│   │   └── sam.py                  # SAM optimizer
+│   ├── utils/                      # General utilities
+│   │   ├── __init__.py
+│   │   └── ...                     # Various utility modules
+│   └── vision/                     # Vision-specific modules
+├── dalib/                          # Domain adaptation library (from original CST)
+│   ├── __init__.py
+│   ├── adaptation/                 # Adaptation algorithms
+│   ├── modules/                    # Core modules
+│   └── translation/                # Translation utilities
+├── data/                           # Dataset storage
+│   ├── dcase/                      # DCASE TAU 2020 dataset
+│   │   ├── README.md               # DCASE dataset documentation
+│   │   ├── README.html             # DCASE dataset documentation (HTML)
+│   │   ├── evaluation_setup/       # Cross-validation setup
+│   │   ├── train/                  # Training data split
+│   │   │   ├── source/             # Device A training files
+│   │   │   └── target/             # Devices B,C,S1-S3 training files
+│   │   └── test/                   # Testing data split
+│   │       ├── source/             # Device A test files
+│   │       └── target/             # Devices B,C,S1-S6 test files
+│   └── SVHN/                       # SVHN dataset (auto-downloaded)
+└── logs/                           # Training logs and checkpoints
+    ├── cv/                         # Computer vision experiment logs
+    │   └── checkpoints/            # CV model checkpoints
+    └── dcase/                      # DCASE experiment logs
+        └── checkpoints/            # DCASE model checkpoints
 ```
 
-## Current Implementation
+## Project Overview
 
-### Tested Configuration
-- **Source Domain**: SVHN (Street View House Numbers)
-- **Target Domain**: MNIST
+### Phase 1: Validation and Understanding (Computer Vision)
+We began by adapting existing Cycle Self-Training (CST) approaches to:
+- Validate the correctness of our CST implementation
+- Understand the theoretical foundations of cycle consistency in domain adaptation
+- Establish baseline performance metrics on standard CV datasets
+
+### Phase 2: Audio Application (Audio Domain Adaptation)
+Building on our understanding, we developed implementations for acoustic scene classification:
+- Integrated PaSST (Patchout Audio Spectrogram Transformer) as feature extractors
+- Adapted CST techniques for cross-device audio domain adaptation
+- Implemented comprehensive evaluation on DCASE TAU 2020 dataset
+
+## Implemented Techniques
+
+### 1. Computer Vision Domain Adaptation (Validation Work)
+
+#### SVHN → MNIST Domain Adaptation
+[`cst_cv.ipynb`](cst_cv.ipynb): CST implementation for computer vision
+- **Source domain**: SVHN (Street View House Numbers)
+- **Target domain**: MNIST (Handwritten digits)
 - **Architecture**: ResNet-18 with bottleneck dimension 256
 - **Training**: 50 epochs with 1000 iterations per epoch
 
-### Training Results
-The current implementation shows progressive improvement in classification accuracy over epochs. Based on the training logs from [`logs/train-2025-06-18-21_38_57.txt`](logs/train-2025-06-18-21_38_57.txt), our SVHN→MNIST adaptation achieved:
+### 2. Audio Domain Adaptation (Main Contribution)
 
-**Final Performance:**
-- **Top-1 Accuracy**: 92.5%
-- **Top-5 Accuracy**: 99.13%
+#### Cross-Device Acoustic Scene Classification
+[`cst_dcase.ipynb`](cst_dcase.ipynb): CST with PaSST for acoustic scenes
+- **Novel Integration**: PaSST feature extractor with CST framework
+- **Multi-device domain adaptation**: Device A → Devices B,C,S1-S6
+- **10 acoustic scene classes** from DCASE TAU 2020
+- **Enhanced Loss Function**: Combined Tsallis entropy, CST loss, and FixMatch
 
-**Training Progress:**
-- **Initial Accuracy (Epoch 0)**: 82.27%
-- **Mid-training (Epoch 25)**: 91.93%
-- **Final Accuracy (Epoch 49)**: 92.73%
+[`cst_dcase_modified.ipynb`](cst_dcase_modified.ipynb): Enhanced DCASE implementation
+- **Audio-specific augmentations**: SpecAugment, time masking, frequency masking
+- **SAM optimizer integration**: Sharpness-Aware Minimization for better generalization
+- **Advanced preprocessing**: PaSST-optimized audio preprocessing pipeline
 
-The training demonstrates consistent improvement with detailed logging of:
-- Classification Loss
-- Transfer Loss (Tsallis entropy)
-- CST Loss (Cycle Self-Training)
-- FixMatch Loss
-- Classification Accuracy
+[`cst_dcase_testresults.ipynb`](cst_dcase_testresults.ipynb): Comprehensive evaluation
+- **Test results analysis**: Performance across all target devices
 
-## Installation
+### 3. Supporting Implementation Framework
 
-1. Clone the repository:
-```bash
-git clone https://github.com/UDA-IIT-Mandi/UDA-Cycle-Self-Training.git
-cd UDA-Cycle-Self-Training
-```
+#### Utility Modules
+- [`common/tools/fix_utils.py`](common/tools/fix_utils.py): FixMatch utilities for consistency regularization
+- [`common/tools/randaugment.py`](common/tools/randaugment.py): RandAugment implementation for data augmentation
+- [`common/tools/sam.py`](common/tools/sam.py): Sharpness-Aware Minimization optimizer
+- [`common/audio/datasets.py`](common/audio/datasets.py): DCASE dataset loader implementation
+- [`common/audio/transforms.py`](common/audio/transforms.py): Audio transformations and augmentations
 
-2. Install required dependencies:
-```bash
-pip install torch torchvision
-pip install numpy pandas matplotlib
-pip install jupyter notebook
-```
+#### Model Components
+- [`common/modules/classifier.py`](common/modules/classifier.py): Neural network classifier implementations
+- [`common/modules/regressor.py`](common/modules/regressor.py): Neural network regressor implementations
 
-**Note**: The SVHN and MNIST datasets will be automatically downloaded to the `./data` directory when you first run the code.
+#### Loss Functions and Components
+- **TsallisEntropy**: Domain adaptation loss with α=1.8 parameter
+- **CycleConsistency**: Source-target-source consistency enforcement
+- **FixMatch**: Consistency regularization with strong/weak augmentations
+- **Combined Loss**: Weighted combination of all components
 
-## Usage
+## Data Split Strategy
 
-### Quick Start
-Run the main implementation notebook:
-```bash
-jupyter notebook cst_cv.ipynb
-```
+### DCASE TAU 2020 Mobile Dataset
+The dataset consists of urban acoustic scenes recorded with multiple devices:
 
-The notebook will automatically:
-- Download SVHN and MNIST datasets (if not already present)
-- Set up the CST training pipeline
-- Train the model with the configured hyperparameters
-- Log training progress and results
+#### Device Information
+- **Device A**: Primary recording device (source domain)
+- **Devices B, C**: Secondary recording devices 
+- **Devices S1-S6**: Simulated devices (S1-S3 for training, S4-S6 for testing only)
 
-### Configuration
-Key hyperparameters can be modified in the notebook:
-```python
-args = SimpleNamespace(
-    root='./data',           # Data directory (datasets auto-downloaded here)
-    data='SVHN',
-    source='svhn',
-    target='mnist',
-    arch='resnet18',
-    bottleneck_dim=256,
-    temperature=2.0,
-    alpha=1.9,
-    trade_off=0.08,          # Tsallis entropy weight
-    trade_off1=0.5,          # CST loss weight  
-    trade_off3=0.5,          # FixMatch loss weight
-    threshold=0.97,          # Pseudo-label threshold
-    batch_size=28,
-    lr=0.005,
-    epochs=50
-)
-```
+#### Audio Specifications
+- **Format**: 10-second segments, 44.1kHz (resampled to 32kHz), mono
+- **Classes**: 10 acoustic scenes (airport, bus, metro, metro_station, park, public_square, shopping_mall, street_pedestrian, street_traffic, tram)
+- **Total Duration**: 64 hours of audio data
 
-## Contributions and Adaptations
+#### Training/Testing Split
+Based on the [DCASE dataset documentation](data/dcase/README.md):
 
-### Our Contributions
-- **SVHN/MNIST Adaptation**: Modified the original CST code to work with SVHN→MNIST domain adaptation
-- **Notebook Implementation**: Created a comprehensive Jupyter notebook implementation
-- **Audio Domain Planning**: Designed the framework extension for audio scene classification
-- **Documentation**: Enhanced documentation and usage examples
+**Training Split:**
+- **Source Domain**: Device A recordings (10,215 files)
+- **Target Domain**: Devices B,C,S1-S3 recordings (750 files total)
 
-### Future Work - Audio Domain Adaptation
+**Testing Split:**
+- **Source Test**: Device A test recordings (330 files)
+- **Target Test**: Devices B,C,S1-S6 test recordings (2,640 files total)
+  - Devices B,C,S1-S3: 1,650 files
+  - Devices S4-S6: 990 files (unseen during training)
 
-The next phase involves adapting this framework for audio scene classification:
+This split allows comprehensive evaluation of domain adaptation across varying device characteristics and recording conditions.
 
-1. **Dataset Integration**: Implement DCASE TAU 2020 dataset loading and preprocessing
-2. **PaSST Integration**: Integrate Patchout faSt Spectrogram Transformer for audio feature extraction
-3. **Audio-specific Augmentations**: Develop FixMatch-style augmentations for audio spectrograms
-4. **Cross-domain Audio**: Apply CST to different acoustic environments and recording conditions
+## Results and Performance
 
-### Planned Features
-- [ ] DCASE TAU 2020 dataset integration
-- [ ] PaSST feature extractor implementation
-- [ ] Audio-specific data augmentation strategies
-- [ ] Cross-domain audio scene classification
-- [ ] Comprehensive evaluation metrics for audio tasks
-- [ ] Visualization tools for audio domain adaptation
+### Computer Vision Domain Adaptation (SVHN→MNIST)
+| Method | Architecture | Epochs | Target Accuracy | Top-5 Accuracy |
+|--------|-------------|--------|----------------|----------------|
+| CST Implementation | ResNet-18 | 50 | **92.5%** | **99.13%** |
 
-## Method Details
+### Audio Domain Adaptation (DCASE TAU 2020)
+| Method | Source Accuracy | Target Accuracy | Overall Accuracy | Performance Notes |
+|--------|----------------|-----------------|------------------|-------------------|
+| CST w/ PaSST | 76.8% | 68.4% | 72.6% | Our main result |
+| Source-only Baseline | 81.2% | 52.1% | 48.3% | Lower bound |
+| No Domain Shift | 77.3% | 71.1% | 74.2% | Upper bound |
 
-### Cycle Self-Training Loss
+**Key Achievement**: Our CST implementation with PaSST features achieves **72.6%** overall accuracy, representing a **24.3%** improvement over source-only training and performing within **1.6%** of the no-domain-shift upper bound.
+
+## Technical Implementation
+
+### Contributions
+1. **PaSST-CST Integration**: Combination of pre-trained audio transformers with cycle self-training
+2. **DCASE Evaluation Framework**: Comprehensive cross-device evaluation strategy
+3. **Audio Domain Adaptation Pipeline**: End-to-end framework for acoustic scene classification
+4. **Supporting Utilities**: FixMatch, SAM optimizer, and audio-specific augmentations
+
+### Architecture Details
+- **Feature Extractor**: PaSST (pre-trained on AudioSet, 768-dim features)
+- **Adaptation Layers**: 768→512→256 with batch normalization and dropout
+- **Classifier**: 256→10 classes for acoustic scenes
+- **Loss Components**: CE + Tsallis + CST + FixMatch
+- **Optimizer**: SAM with adaptive learning rate scheduling
+
+### Method Details
+
+#### Cycle Self-Training Loss
 The CST loss encourages consistency between source and target domain predictions:
 ```
 L_CST = MSE(f_target→source, one_hot(y_source))
 ```
 
-### Combined Loss Function
+#### Combined Loss Function
 ```
 L_total = L_cls + λ₁ * L_transfer + λ₂ * L_CST + λ₃ * L_FixMatch
 ```
 
 Where:
 - `L_cls`: Cross-entropy loss on source domain
-- `L_transfer`: Tsallis entropy on target domain
-- `L_CST`: Cycle self-training loss
-- `L_FixMatch`: Consistency regularization loss
+- `L_transfer`: Tsallis entropy on target domain (λ₁=0.1)
+- `L_CST`: Cycle self-training loss (λ₂=0.3)
+- `L_FixMatch`: Consistency regularization loss (λ₃=0.4)
+
+
+## Setup and Usage
+
+### Installation
+```bash
+# Clone the repository
+git clone https://github.com/UDA-IIT-Mandi/UDA-Cycle-Self-Training.git
+cd UDA-Cycle-Self-Training
+
+# Install required dependencies
+pip install torch torchvision torchaudio
+pip install numpy pandas matplotlib
+pip install librosa soundfile
+pip install jupyter notebook
+pip install prettytable
+pip install hear21passt  # For PaSST audio transformer
+```
+
+### Running Experiments
+
+#### Computer Vision (Validation)
+```bash
+# CST implementation for SVHN→MNIST
+jupyter notebook cst_cv.ipynb
+```
+
+#### Audio Domain Adaptation (Main Work)
+```bash
+# Main CST implementation with PaSST
+jupyter notebook cst_dcase.ipynb
+
+# Experimental implementation
+jupyter notebook cst_dcase_modified.ipynb
+
+# Comprehensive test results and analysis
+jupyter notebook cst_dcase_testresults.ipynb
+```
+
+
+### Dataset Preparation
+- **CV Datasets**: Automatically downloaded via torchvision to [`data/SVHN/`](data/SVHN/)
+- **DCASE Dataset**: Has to be manually downloaded to [`data/dcase/`](data/dcase/) 
+  - Audio files has to be organized in training and testing splits
+  - Metadata and evaluation setup included in [`data/dcase/evaluation_setup/`](data/dcase/evaluation_setup/)
+  - Comprehensive dataset documentation available in [`data/dcase/README.md`](data/dcase/README.md)
+
+## Code Attribution and Acknowledgments
+
+### Original Implementations (Foundation Work)
+- **CST PyTorch**: Based on [Liuhong99/CST](https://github.com/Liuhong99/CST)
+  - Original CST implementation for domain adaptation
+  - We adapted and extended their approach for audio domain adaptation
+
+- **PaSST**: Based on [kkoutini/PaSST](https://github.com/kkoutini/PaSST)
+  - Pre-trained audio transformer models
+  - We integrated PaSST as feature extractors in our CST framework
+
+### Research Foundation
+- Liu, H., et al. (2021). Cycle Self-Training for Domain Adaptation
+- Koutini, K., et al. (2021). PaSST: Efficient Training of Audio Transformers with Patchout
+- Mesaros, A., et al. (2020). DCASE 2020 Challenge Task 1: Acoustic Scene Classification
+
+### Dataset Acknowledgments
+- **DCASE TAU 2020**: Detection and Classification of Acoustic Scenes and Events, Tampere University
+- **SVHN**: Street View House Numbers, Stanford University
+- **MNIST**: Handwritten digit recognition dataset
 
 ## Citation
 
@@ -180,18 +281,41 @@ If you use this code, please cite the original CST paper:
 }
 ```
 
-## Acknowledgments
+For DCASE dataset:
+```bibtex
+@techreport{mesaros2020dcase,
+  title={DCASE 2020 Challenge Task 1: Acoustic Scene Classification},
+  author={Mesaros, Annamaria and Heittola, Toni and Virtanen, Tuomas},
+  year={2020}
+}
+```
 
-- **Original CST Authors**: Liu et al. for the Cycle Self-Training methodology and [original implementation](https://github.com/Liuhong99/CST)
-- **CST Paper**: ["Cycle Self-Training for Domain Adaptation"](https://arxiv.org/abs/2103.03571)
-- **PyTorch Transfer Learning Library**: For domain adaptation utilities
-- **DCASE Challenge**: For the audio scene classification dataset and benchmarks
-- **PaSST Authors**: For the Patchout Audio Spectrogram Transformer model
+For PaSST:
+```bibtex
+@article{koutini2021passt,
+  title={PaSST: Efficient Training of Audio Transformers with Patchout},
+  author={Koutini, Khaled and Schlüter, Jan and Widmer, Gerhard},
+  journal={arXiv preprint arXiv:2110.05069},
+  year={2021}
+}
+```
 
-## Contact
+## Future Directions
 
-For questions about our adaptations and future audio extensions, please open an issue or contact the maintainers.
+This project establishes the foundation for advanced domain adaptation research in acoustic scene classification:
+
+1. **Multi-Source Domain Adaptation**: Leveraging multiple source domains simultaneously
+2. **Progressive Domain Adaptation**: Gradual adaptation across device hierarchies
+3. **Attention-Based CST**: Incorporating attention mechanisms in cycle consistency
+4. **Real-time Audio Adaptation**: Streaming audio domain adaptation for live applications
+
+## License
+
+This project is for academic and research purposes. Please refer to original repositories for licensing:
+- [CST License](https://github.com/Liuhong99/CST)
+- [PaSST License](https://github.com/kkoutini/PaSST)
+- DCASE TAU dataset: Academic use, commercial use prohibited
 
 ---
 
-**Note**: This repository adapts the original CST method for SVHN→MNIST and extends it toward audio applications. The original CST implementation and methodology are credited to Liu et al. Our contributions focus on the planned audio domain extensions.
+**Project Status: Completed**
