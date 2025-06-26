@@ -1,6 +1,7 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+*.pyc
 *$py.class
 
 # Jupyter Notebook
@@ -16,12 +17,19 @@ env.bak/
 venv.bak/
 
 # Datasets
-data/
-datasets/
-
+data/dcase/test/source/*.wav
+data/dcase/test/target/*.wav
+data/dcase/train/*.wav
+data/dcase/train/source/*.wav
+data/dcase/train/target/*.wav
+data/SVHN/
 
 # IDE
 .vscode/
+
+# Model Files
+logs/cv/checkpoints/*pth
+logs/dcase/checkpoints/*pth
 
 
 # OS specific
