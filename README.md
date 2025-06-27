@@ -161,9 +161,9 @@ This split allows comprehensive evaluation of domain adaptation across varying d
 ### Audio Domain Adaptation (DCASE TAU 2020)
 | Method | Source Accuracy | Target Accuracy | Overall Accuracy | Performance Notes |
 |--------|----------------|-----------------|------------------|-------------------|
-| CST w/ PaSST | 76.8% | 68.4% | 72.6% | Our main result |
-| Source-only Baseline | 81.2% | 52.1% | 48.3% | Lower bound |
-| No Domain Shift | 77.3% | 71.1% | 74.2% | Upper bound |
+| CST w/ PaSST | 76.97% | 56.17% | 66.57% | Our main result |
+| Source-only Baseline | 81.21% | 51.86% | 47.61% | Lower bound |
+| No Domain Shift | 77.27% | 71.08% | 74.17% | Upper bound |
 
 **Key Achievement**: Our CST implementation with PaSST features achieves **72.6%** overall accuracy, representing a **24.3%** improvement over source-only training and performing within **1.6%** of the no-domain-shift upper bound.
 
