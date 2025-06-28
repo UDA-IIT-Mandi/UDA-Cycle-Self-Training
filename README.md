@@ -241,11 +241,82 @@ jupyter notebook cst_dcase_testresults.ipynb
 
 
 ### Dataset Preparation
+
+#### Computer Vision Datasets
 - **CV Datasets**: Automatically downloaded via torchvision to [`data/SVHN/`](data/SVHN/)
-- **DCASE Dataset**: Has to be manually downloaded to [`data/dcase/`](data/dcase/) 
-  - Audio files has to be organized in training and testing splits
-  - Metadata and evaluation setup included in [`data/dcase/evaluation_setup/`](data/dcase/evaluation_setup/)
-  - Comprehensive dataset documentation available in [`data/dcase/README.md`](data/dcase/README.md)
+
+#### DCASE TAU 2020 Dataset
+The DCASE dataset requires manual download and processing. We provide an automated script to handle the extraction and organization:
+
+1. **Download the dataset**: Download the DCASE TAU 2020 Mobile Development dataset zip file from the [official DCASE website](http://dcase.community/challenge2020/task-acoustic-scene-classification)
+
+2. **Run the processor script**:
+   ```bash
+   # Basic usage - extracts to ./data/dcase/
+   python dcase_processor.py /path/to/TAU-urban-acoustic-scenes-2020-mobile-development.zip
+   
+   # With custom output directory and statistics
+   python dcase_processor.py /path/to/dataset.zip --output_dir ./data/dcase --stats
+   
+   # For development (keep temporary files for inspection)
+   python dcase_processor.py /path/to/dataset.zip --output_dir ./data/dcase --stats --no_cleanup
+   ```
+
+3. **Expected output structure**:
+   ```
+   data/dcase/
+   ├── README.md               # Dataset documentation
+   ├── README.html             # Dataset documentation (HTML)
+   ├── meta.csv                # Metadata file
+   ├── evaluation_setup/       # Cross-validation setup files
+   │   ├── fold1_train.csv
+   │   ├── fold1_test.csv
+   │   └── fold1_evaluate.csv
+   ├── train/                  # Training data split
+   │   ├── source/             # Device A training files (~10,215 files)
+   │   └── target/             # Devices B,C,S1-S3 training files (~750 files)
+   └── test/                   # Testing data split
+       ├── source/             # Device A test files (~330 files)
+       └── target/             # Devices B,C,S1-S6 test files (~2,640 files)
+   ```
+
+If you prefer manual setup:
+1. Download and extract the DCASE TAU 2020 Mobile Development dataset
+2. Organize audio files according to the directory structure above
+3. Ensure proper train/test splits based on the provided fold CSV files
+4. Place files in [`data/dcase/`](data/dcase/) following the expected structure
+
+
+##### Processor Usage Examples
+```bash
+# Standard processing with statistics
+python dcase_processor.py TAU-dataset.zip --stats
+
+# Custom output location  
+python dcase_processor.py TAU-dataset.zip --output_dir ./datasets/dcase_tau_2020
+
+# Development mode (keep temporary files)
+python dcase_processor.py TAU-dataset.zip --no_cleanup --stats
+
+# Help and options
+python dcase_processor.py --help
+```
+
+##### Expected Statistics Output
+```
+==================================================
+DATASET STATISTICS  
+==================================================
+Split      Source     Target     Total     
+--------------------------------------------------
+Train      10215      750        10965     
+Test       330        2640       2970      
+--------------------------------------------------
+Total      10545      3390       13935     
+==================================================
+```
+
+For detailed dataset information, see the comprehensive documentation in [`data/dcase/README.md`](data/dcase/README.md).
 
 ## Code Attribution and Acknowledgments
 
