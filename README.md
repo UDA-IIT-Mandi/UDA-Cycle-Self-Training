@@ -72,6 +72,15 @@ Building on our understanding, we developed implementations for acoustic scene c
 - Adapted CST techniques for cross-device audio domain adaptation
 - Implemented comprehensive evaluation on DCASE TAU 2020 dataset
 
+## Mentors and Guides
+
+We would like to acknowledge our mentors and guides who provided invaluable guidance and supervision throughout this research project:
+
+- **Dr. Padmanabhan Rajan** - Associate Professor, The School of Computing and Electrical Engineering, IIT Mandi
+- **Abhishek Dileep** - Research Scholar, IIT Mandi
+
+Their expertise in machine learning, domain adaptation, and audio signal processing was instrumental in the successful completion of this work.
+
 ## Implemented Techniques
 
 ### 1. Computer Vision Domain Adaptation (Validation Work)
