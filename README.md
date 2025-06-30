@@ -9,8 +9,6 @@ This repository contains the second internship project completed during the rese
 ├── README.md
 ├── cst_cv.ipynb                    # Computer vision implementation (SVHN→MNIST)
 ├── cst_dcase.ipynb                 # Audio implementation (DCASE TAU 2020)
-├── cst_dcase_modified.ipynb        # Modified DCASE implementation with SAM
-├── cst_dcase_testresults.ipynb     # DCASE test results and evaluation
 ├── archive/                        # Archive of original implementations
 │   ├── CST1.py                     # Original CST implementation
 │   ├── cst_bert_seq.py             # BERT sequence implementation
@@ -94,13 +92,6 @@ Building on our understanding, we developed implementations for acoustic scene c
 - **10 acoustic scene classes** from DCASE TAU 2020
 - **Enhanced Loss Function**: Combined Tsallis entropy, CST loss, and FixMatch
 
-[`cst_dcase_modified.ipynb`](cst_dcase_modified.ipynb): Enhanced DCASE implementation
-- **Audio-specific augmentations**: SpecAugment, time masking, frequency masking
-- **SAM optimizer integration**: Sharpness-Aware Minimization for better generalization
-- **Advanced preprocessing**: PaSST-optimized audio preprocessing pipeline
-
-[`cst_dcase_testresults.ipynb`](cst_dcase_testresults.ipynb): Comprehensive evaluation
-- **Test results analysis**: Performance across all target devices
 
 ### 3. Supporting Implementation Framework
 
